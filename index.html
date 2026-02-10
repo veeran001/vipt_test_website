@@ -1,20 +1,371 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <style>
-        body {
-            background-image: url("images/xxx.jpg");
-            background-color: #cccccc; /* Fallback color if image cannot load */
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Will You Be My Valentine? ♡</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    
+    body {
+      min-height: 100dvh;
+      background: linear-gradient(135deg, #fff0f5 0%, #f8e1e9 50%, #ffe4e9 100%);
+      font-family: 'Poppins', system-ui, sans-serif;
+      color: #222;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      min-height: 100dvh;
+      padding: clamp(5vh,9vw,7vh) clamp(5vw,8vw,9vw);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+    }
+
+    h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(3.8rem, 15vw, 7.5rem);
+      color: #e8315e;
+      margin-bottom: clamp(1.2rem, 5vw, 2rem);
+      line-height: 0.9;
+      text-shadow: 0 5px 22px rgba(232,49,94,0.25);
+    }
+
+    .subtitle {
+      font-size: clamp(1.1rem, 4.8vw, 1.4rem);
+      color: #444;
+      max-width: 38ch;
+      line-height: 1.5;
+      margin: 0 auto clamp(2rem, 6vw, 3.5rem);
+    }
+
+    .buttons-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      min-height: 180px;
+      margin: clamp(2.5rem, 7vw, 4rem) 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(2.2rem, 6vw, 3.2rem);
+    }
+
+    .btn {
+      font-size: clamp(1.25rem, 5vw, 1.45rem);
+      font-weight: 500;
+      padding: clamp(1.1rem, 5vw, 1.4rem) clamp(2.5rem, 10vw, 3.5rem);
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.35s ease;
+      box-shadow: 0 7px 24px rgba(0,0,0,0.12);
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-yes {
+      background: linear-gradient(135deg, #ff3366, #ff6b6b);
+      color: white;
+      width: 100%;
+      max-width: 300px;
+      z-index: 10;
+    }
+
+    .btn-yes:active { transform: scale(0.94); }
+    .btn-yes:hover   { transform: translateY(-4px) scale(1.07); box-shadow: 0 20px 50px rgba(255,51,102,0.45); }
+
+    .btn-no {
+      background: white;
+      color: #555;
+      border: 2.5px solid #ccc;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 160px;
+      pointer-events: auto;
+      user-select: none;
+      z-index: 5;
+    }
+
+    .letter {
+      display: none;
+      margin: clamp(4vh,7vw,6vh) auto 3rem;
+      padding: clamp(2rem,5.5vw,2.8rem);
+      background: rgba(255,255,255,0.96);
+      border-radius: 26px;
+      box-shadow: 0 12px 44px rgba(232,49,94,0.2);
+      max-width: 92%;
+      width: 100%;
+      max-width: 560px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.7);
+      animation: fadeInUp 0.9s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity:0; transform:translateY(45px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .letter h2 {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(2.8rem,11vw,4rem);
+      color: #d6335c;
+      margin-bottom: 1.4rem;
+    }
+
+    .letter p {
+      font-size: clamp(1.08rem,4.2vw,1.25rem);
+      line-height: 1.7;
+      color: #333;
+      margin-bottom: 1.3rem;
+    }
+
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 999;
+    }
+
+    .particle {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) translateZ(0);
+      will-change: transform, opacity;
+      backface-visibility: hidden;
+      pointer-events: none;
+      font-size: 2.2rem;
+      opacity: 0;
+    }
+
+    @keyframes explode {
+      0%   { transform: translate(-50%, -50%) scale(0.2) rotate(0deg) translateZ(0); opacity: 0; }
+      10%  { opacity: 1; }
+      100% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1) rotate(var(--rot)) translateZ(0); opacity: 0; }
+    }
+
+    @keyframes sparkle {
+      0%, 100% { opacity: 0; transform: scale(0.6) translateZ(0); }
+      50%      { opacity: 0.9; transform: scale(1.4) translateZ(0); }
+    }
+
+    /* Larger starry image section */
+    .starry-section {
+      margin: 5rem auto 8rem;
+      max-width: 1100px;
+      width: 95%;
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 1.5s ease, transform 1.5s ease;
+    }
+
+    .starry-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .image-container {
+      position: relative;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 25px 70px rgba(232,49,94,0.3);
+      background: rgba(0,0,0,0.4);
+      max-height: 90vh;
+      overflow-y: hidden;
+    }
+
+    .starry-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 28px;
+    }
+
+    .caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      text-align: center;
+      color: white;
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(2.4rem, 7vw, 4.5rem);
+      text-shadow: 0 5px 18px rgba(0,0,0,0.85);
+      padding: 2.5rem 1rem 1.5rem;
+      background: linear-gradient(to top, rgba(0,0,0,0.75), transparent);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transform: none !important; transition: none !important; }
+    }
+
+    @media (min-width: 520px) {
+      .buttons-wrapper { flex-direction: row; gap: 4rem; }
+      .btn-no { position: static; transform: none; }
+    }
+
+    @media (max-width: 600px) {
+      .starry-section { margin: 3rem auto 5rem; }
+      .caption { font-size: clamp(2rem, 8vw, 3.2rem); padding: 2rem 0.8rem 1.2rem; }
+    }
+  </style>
 </head>
+<body>
 
-<body style="background-color:cyan;">
+  <div class="particles" id="particles"></div>
 
-<h1 style="color:white;text-align:center;">I hahahaha heheheh</h1>
+  <div class="container">
+    <h1>Will you be<br>my Valentine?</h1>
+    
+    <div class="subtitle">
+      I've been thinking about this moment way too much… ♡
+    </div>
 
-<p style="color:Wheat;text-align:center;">Confused as hell</p>
-<p>Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla Bla</p>
+    <div class="buttons-wrapper">
+      <button class="btn btn-yes" onclick="sayYes()">Yes 💖</button>
+      
+      <button class="btn btn-no" id="noBtn">No 😢</button>
+    </div>
+
+    <div class="letter" id="letter">
+      <h2>YESSSS!! 🥰💕💞</h2>
+      <p>Hehehehhehehee heheh hehe........</p>
+      <p>I promise tons of forehead kisses, midnight talks, dumb memes, warm hugs on bad days, and all the love I've been keeping just for you.</p>
+      <p>Fucker.......Mangya....................I migh get a BJ!!!!! ♡</p>
+      <p style="margin-top:2rem; font-size:clamp(1.25rem,5.2vw,1.5rem);">Yeah!!!!!!!!!!!!~</p>
+    </div>
+
+    <!-- Larger anime couple reveal -->
+    <div class="starry-section" id="starryReveal">
+      <div class="image-container">
+        <img 
+          src="images/together.jpg?st=..." 
+          alt="Anime boy and girl sitting together watching a shooting star under the night sky, view from behind"
+          class="starry-img"
+          loading="lazy"
+        />
+        <div class="caption">
+          Just you & me... under the stars forever ♡
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const noBtn = document.getElementById('noBtn');
+    let isAnimating = false;
+
+    function flee() {
+      if (isAnimating) return;
+      isAnimating = true;
+      const wrapper = document.querySelector('.buttons-wrapper');
+      const rect = wrapper.getBoundingClientRect();
+      const safePadding = window.innerWidth < 520 ? 50 : 90;
+      const maxX = rect.width - noBtn.offsetWidth - safePadding * 2;
+      const maxY = rect.height - noBtn.offsetHeight - safePadding * 2;
+      const newX = safePadding + Math.random() * maxX;
+      const newY = safePadding + Math.random() * maxY;
+      noBtn.style.transition = 'all 0.22s cubic-bezier(0.6, -0.3, 0.1, 1.6)';
+      noBtn.style.left = newX + 'px';
+      noBtn.style.top  = newY + 'px';
+      noBtn.style.transform = 'none';
+      setTimeout(() => {
+        noBtn.style.transition = 'all 0.4s ease-out';
+        isAnimating = false;
+      }, 280);
+    }
+
+    noBtn.addEventListener('pointerenter', flee);
+    noBtn.addEventListener('mouseover', flee);
+    noBtn.addEventListener('pointermove', (e) => { if (e.pointerType === 'touch') flee(); });
+    noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); flee(); });
+
+    noBtn.addEventListener('click', (e) => {
+      e.preventDefault(); e.stopPropagation(); flee();
+      setTimeout(() => alert("Chutiyaaaa......Click on Yes..... 💗"), 300);
+    });
+
+    function sayYes() {
+      document.getElementById('letter').style.display = 'block';
+      document.querySelector('.buttons-wrapper').style.opacity = '0';
+      setTimeout(() => document.querySelector('.buttons-wrapper').style.display = 'none', 500);
+
+      chaosExplosion();
+
+      setTimeout(() => {
+        const starry = document.getElementById('starryReveal');
+        if (starry) starry.classList.add('visible');
+      }, 1800);
+
+      setTimeout(() => window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'}), 2200);
+    }
+
+    function chaosExplosion() {
+      const container = document.getElementById('particles');
+      const count = 180;
+      const yesBtn = document.querySelector('.btn-yes');
+      const rect = yesBtn.getBoundingClientRect();
+      const originX = rect.left + rect.width / 2;
+      const originY = rect.top + rect.height / 2;
+
+      const hearts = ['❤️','💖','💗','💕','🫶','💘','💞','💓','💝'];
+      const confetti = ['#ff3366','#ff69b4','#db7093','#c71585','#ffd700','#ba55d3','#ffffff'];
+      const sparkles = ['✨','💫','🌟'];
+
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+
+        const type = Math.random();
+        if (type < 0.15) {
+          p.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+          p.style.fontSize = (1.8 + Math.random() * 2.8) + 'rem';
+          p.style.animation = `sparkle ${1.8 + Math.random()*1.5}s infinite`;
+        } else if (type < 0.40) {
+          p.textContent = '■';
+          p.style.color = confetti[Math.floor(Math.random() * confetti.length)];
+          p.style.fontSize = (1.2 + Math.random() * 2) + 'rem';
+          p.style.transform += ` rotate(${Math.random()*360}deg)`;
+        } else {
+          p.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+          p.style.fontSize = (2 + Math.random() * 3) + 'rem';
+        }
+
+        p.style.left = originX + 'px';
+        p.style.top  = originY + 'px';
+
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 180 + Math.random() * 550;
+        const tx = Math.cos(angle) * dist;
+        const ty = Math.sin(angle) * dist;
+
+        p.style.setProperty('--tx', tx + 'px');
+        p.style.setProperty('--ty', ty + 'px');
+        p.style.setProperty('--rot', (Math.random() * 1440 - 720) + 'deg');
+
+        const dur = 2.2 + Math.random() * 3.3;
+        p.style.animation = `explode ${dur}s forwards cubic-bezier(0.16, 1, 0.3, 1)`;
+        p.style.animationDelay = (Math.random() * 0.5) + 's';
+        p.style.opacity = '0';
+
+        container.appendChild(p);
+        setTimeout(() => p.remove(), 7000);
+      }
+    }
+  </script>
 </body>
 </html>
-
